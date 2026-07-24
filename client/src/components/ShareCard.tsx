@@ -16,7 +16,6 @@ export default function ShareCard({ data, topGamesCount, theme }: ShareCardProps
   const [sharing, setSharing] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
 
-  const [tilt, setTilt] = useState({ x: 0, y: 0 });
   const [glare, setGlare] = useState({ x: 50, y: 50, opacity: 0 });
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -25,14 +24,6 @@ export default function ShareCard({ data, topGamesCount, theme }: ShareCardProps
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
 
-    const normX = x / rect.width - 0.5;
-    const normY = y / rect.height - 0.5;
-
-    // Limit rotation to 12 degrees
-    const rotateX = -normY * 12;
-    const rotateY = normX * 12;
-
-    setTilt({ x: rotateX, y: rotateY });
     setGlare({
       x: (x / rect.width) * 100,
       y: (y / rect.height) * 100,
@@ -41,7 +32,6 @@ export default function ShareCard({ data, topGamesCount, theme }: ShareCardProps
   };
 
   const handleMouseLeave = () => {
-    setTilt({ x: 0, y: 0 });
     setGlare({ x: 50, y: 50, opacity: 0 });
   };
 
@@ -186,10 +176,6 @@ export default function ShareCard({ data, topGamesCount, theme }: ShareCardProps
         style={{
           width: format === 'square' ? '360px' : '320px',
           height: 'auto',
-          transform: (downloading || sharing) 
-            ? 'none' 
-            : `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
-          transformStyle: 'preserve-3d',
         }}
       >
         {/* Interactive Glare overlay */}
