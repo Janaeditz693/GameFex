@@ -18,23 +18,7 @@ export default function ShareCard({ data, topGamesCount, theme }: ShareCardProps
 
   const isLight = theme === 'light';
 
-  const glareRef = useRef<HTMLDivElement>(null);
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!cardRef.current || !glareRef.current || downloading || sharing) return;
-    const rect = cardRef.current.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * 100;
-    const y = ((e.clientY - rect.top) / rect.height) * 100;
-
-    glareRef.current.style.background = `radial-gradient(circle at ${x}% ${y}%, rgba(255, 255, 255, ${isLight ? 0.08 : 0.15}) 0%, transparent 65%)`;
-    glareRef.current.style.opacity = '1';
-  };
-
-  const handleMouseLeave = () => {
-    if (glareRef.current) {
-      glareRef.current.style.opacity = '0';
-    }
-  };
 
   const { profile, aiStats, games } = data;
 
@@ -166,28 +150,16 @@ export default function ShareCard({ data, topGamesCount, theme }: ShareCardProps
       {/* Dynamic Receipt Canvas */}
       <div
         ref={cardRef}
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-        className={`relative flex flex-col justify-start overflow-hidden border p-6 shadow-2xl transition-all duration-300 font-mono text-xs cursor-pointer ${
+        className={`relative flex flex-col justify-start overflow-hidden border p-6 shadow-2xl transition-all duration-300 font-mono text-xs ${
           isLight 
-            ? 'border-slate-300 bg-[#FAF9F6] text-slate-800 shadow-md hover:shadow-xl' 
-            : 'border-white/10 bg-[#0F131C] text-white shadow-2xl hover:border-white/20'
+            ? 'border-slate-300 bg-[#FAF9F6] text-slate-800 shadow-md shadow-slate-200/50' 
+            : 'border-white/10 bg-[#0F131C] text-white shadow-2xl'
         }`}
         style={{
           width: format === 'square' ? '360px' : '320px',
           height: 'auto',
         }}
       >
-        {/* Interactive Glare overlay (ref-based for zero re-render lag during scrolling) */}
-        {!(downloading || sharing) && (
-          <div 
-            ref={glareRef}
-            className="absolute inset-0 pointer-events-none z-50 transition-opacity duration-300 opacity-0"
-            style={{
-              background: `radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0) 0%, transparent 65%)`,
-            }}
-          />
-        )}
 
         {/* Subtle auric glow matching theme */}
         <div className={`absolute inset-x-0 top-0 h-40 pointer-events-none ${
