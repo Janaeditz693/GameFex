@@ -222,6 +222,8 @@ export function analyzeProfile(
   const steamIdNumLast = parseInt(profile.steamId.slice(-4)) || 0;
   const roastIndex = steamIdNumLast % roastsPool.length;
   const roast = roastsPool[roastIndex];
+  const newestGame = games.length > 1 ? { name: games[games.length - 2].name, hours: Math.round(games[games.length - 2].playtime_forever / 6) / 10 } : undefined;
+  const oldestGame = games.length > 0 ? { name: games[games.length - 1].name, hours: Math.round(games[games.length - 1].playtime_forever / 6) / 10 } : undefined;
 
   return {
     title,
