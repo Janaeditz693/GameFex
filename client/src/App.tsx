@@ -201,37 +201,6 @@ export default function App() {
                     <ArrowRight className="h-4 w-4" />
                   </button>
                 </div>
-
-                {/* Quick links to demo profiles */}
-                <div className={`mt-4 flex flex-wrap items-center justify-center gap-2 text-[11px] font-outfit border-t pt-3 transition-colors ${
-                  vibeTheme === 'light' ? 'text-slate-500 border-slate-200' : 'text-slate-500 border-white/5'
-                }`}>
-                  <span>Try demo:</span>
-                  <button 
-                    onClick={() => handleProfileScan('gamergod99')} 
-                    className={`hover:underline font-semibold px-2 py-0.5 rounded transition-all ${
-                      vibeTheme === 'light' ? 'text-indigo-600 bg-slate-100 hover:bg-slate-200' : 'text-primary bg-white/5 hover:bg-white/10'
-                    }`}
-                  >
-                    GamerGod99
-                  </button>
-                  <button 
-                    onClick={() => handleProfileScan('cozycat')} 
-                    className={`hover:underline font-semibold px-2 py-0.5 rounded transition-all ${
-                      vibeTheme === 'light' ? 'text-indigo-600 bg-slate-100 hover:bg-slate-200' : 'text-primary bg-white/5 hover:bg-white/10'
-                    }`}
-                  >
-                    CozyCat
-                  </button>
-                  <button 
-                    onClick={() => handleProfileScan('goblinking')} 
-                    className={`hover:underline font-semibold px-2 py-0.5 rounded transition-all ${
-                      vibeTheme === 'light' ? 'text-indigo-600 bg-slate-100 hover:bg-slate-200' : 'text-primary bg-white/5 hover:bg-white/10'
-                    }`}
-                  >
-                    GoblinKing
-                  </button>
-                </div>
               </div>
             </div>
 
