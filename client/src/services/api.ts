@@ -1,7 +1,7 @@
 import { ProfileAnalysis, CompareResult } from '@shared/types';
 
-// Use standard API base (vite proxies /api calls in development, or we hit absolute backend url)
-const API_BASE = '/api';
+// Use environment API base for production deployment, falling back to local proxy in development
+const API_BASE = import.meta.env.VITE_API_URL || '/api';
 
 export async function fetchProfileAnalysis(identifier: string): Promise<ProfileAnalysis> {
   const encoded = encodeURIComponent(identifier);
