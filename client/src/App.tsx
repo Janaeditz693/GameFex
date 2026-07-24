@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Gamepad2, Search, ArrowRight, Flame, ArrowLeft, RefreshCw, 
-  ShieldAlert, Receipt, LayoutGrid, Sun, Moon, HelpCircle
+  ShieldAlert, Receipt, LayoutGrid, Sun, Moon
 } from 'lucide-react';
 import { fetchProfileAnalysis } from './services/api';
 import { ProfileAnalysis } from '@shared/types';
@@ -259,29 +259,7 @@ export default function App() {
               ))}
             </div>
 
-            {/* FAQs */}
-            <div className={`border-t pt-12 max-w-3xl w-full transition-colors ${
-              vibeTheme === 'light' ? 'border-slate-200' : 'border-white/5'
-            }`}>
-              <div className="text-center mb-8 flex flex-col items-center">
-                <HelpCircle className="h-8 w-8 text-primary mb-2 animate-bounce-short" />
-                <h2 className={`font-outfit text-2xl font-bold uppercase text-glow ${vibeTheme === 'light' ? 'text-slate-900' : 'text-white'}`}>Frequently Asked Questions</h2>
-              </div>
-              <div className="flex flex-col gap-4">
-                <div className={`rounded-card p-5 border transition-all ${
-                  vibeTheme === 'light' ? 'bg-white border-slate-200 text-slate-800 shadow-sm' : 'glass-card border-white/5'
-                }`}>
-                  <h4 className="font-bold text-sm mb-2">How do I verify if my Steam settings are visible?</h4>
-                  <p className={`text-xs leading-relaxed ${vibeTheme === 'light' ? 'text-slate-600' : 'text-slate-400'}`}>By default, Steam profile URLs must be set to public. If private details are restricted, our engine automatically maps high-fidelity simulated accounts so you can preview custom designs instantly!</p>
-                </div>
-                <div className={`rounded-card p-5 border transition-all ${
-                  vibeTheme === 'light' ? 'bg-white border-slate-200 text-slate-800 shadow-sm' : 'glass-card border-white/5'
-                }`}>
-                  <h4 className="font-bold text-sm mb-2">Is my login credential requested?</h4>
-                  <p className={`text-xs leading-relaxed ${vibeTheme === 'light' ? 'text-slate-600' : 'text-slate-400'}`}>No, we never request your passwords. The application reads public metadata statistics only via Steam Web APIs, ensuring 100% security.</p>
-                </div>
-              </div>
-            </div>
+
 
           </div>
         )}
