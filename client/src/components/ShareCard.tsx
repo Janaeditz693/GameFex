@@ -16,6 +16,35 @@ export default function ShareCard({ data, topGamesCount, theme }: ShareCardProps
   const [sharing, setSharing] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
 
+  const [tilt, setTilt] = useState({ x: 0, y: 0 });
+  const [glare, setGlare] = useState({ x: 50, y: 50, opacity: 0 });
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current || downloading || sharing) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    const normX = x / rect.width - 0.5;
+    const normY = y / rect.height - 0.5;
+
+    // Limit rotation to 12 degrees
+    const rotateX = -normY * 12;
+    const rotateY = normX * 12;
+
+    setTilt({ x: rotateX, y: rotateY });
+    setGlare({
+      x: (x / rect.width) * 100,
+      y: (y / rect.height) * 100,
+      opacity: isLight ? 0.08 : 0.15
+    });
+  };
+
+  const handleMouseLeave = () => {
+    setTilt({ x: 0, y: 0 });
+    setGlare({ x: 50, y: 50, opacity: 0 });
+  };
+
   const { profile, aiStats, games } = data;
   const isLight = theme === 'light';
 
@@ -147,16 +176,32 @@ export default function ShareCard({ data, topGamesCount, theme }: ShareCardProps
       {/* Dynamic Receipt Canvas */}
       <div
         ref={cardRef}
-        className={`relative flex flex-col justify-start overflow-hidden border p-6 shadow-2xl transition-all duration-300 font-mono text-xs ${
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        className={`relative flex flex-col justify-start overflow-hidden border p-6 shadow-2xl transition-all duration-300 font-mono text-xs cursor-pointer ${
           isLight 
-            ? 'border-slate-300 bg-[#FAF9F6] text-slate-800 shadow-md' 
-            : 'border-white/10 bg-[#0F131C] text-white shadow-2xl'
+            ? 'border-slate-300 bg-[#FAF9F6] text-slate-800 shadow-md hover:shadow-xl' 
+            : 'border-white/10 bg-[#0F131C] text-white shadow-2xl hover:border-white/20'
         }`}
         style={{
           width: format === 'square' ? '360px' : '320px',
           height: 'auto',
+          transform: (downloading || sharing) 
+            ? 'none' 
+            : `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
+          transformStyle: 'preserve-3d',
         }}
       >
+        {/* Interactive Glare overlay */}
+        {!(downloading || sharing) && (
+          <div 
+            className="absolute inset-0 pointer-events-none z-50 transition-opacity duration-300"
+            style={{
+              background: `radial-gradient(circle at ${glare.x}% ${glare.y}%, rgba(255, 255, 255, ${glare.opacity}) 0%, transparent 65%)`,
+            }}
+          />
+        )}
+
         {/* Subtle auric glow matching theme */}
         <div className={`absolute inset-x-0 top-0 h-40 pointer-events-none ${
           isLight ? 'bg-gradient-to-b from-slate-200/30 to-transparent' : 'bg-gradient-to-b from-primary/10 to-transparent'
