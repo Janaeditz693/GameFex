@@ -1,0 +1,80 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-background text-white font-sans;
+    background-image: 
+      radial-gradient(circle at 10% 20%, rgba(0, 229, 255, 0.05) 0%, transparent 40%),
+      radial-gradient(circle at 90% 80%, rgba(108, 255, 108, 0.03) 0%, transparent 45%),
+      radial-gradient(circle at 50% 50%, rgba(15, 23, 42, 0.5) 0%, #0B0F19 100%);
+    background-attachment: fixed;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0B0F19;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1E2430;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #00E5FF;
+}
+
+/* Premium Card Styles with Glowing Borders */
+.glass-card {
+  background: rgba(30, 36, 48, 0.65);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.glass-card-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card-hover:hover {
+  transform: translateY(-4px);
+  border-color: rgba(0, 229, 255, 0.3);
+  box-shadow: 0 0 30px rgba(0, 229, 255, 0.08);
+}
+
+/* Custom Radial Blur Backgrounds */
+.auric-glow {
+  filter: blur(80px);
+  opacity: 0.15;
+  pointer-events: none;
+}
+
+/* Receipt Style Card Fonts */
+.receipt-font {
+  font-family: 'Courier New', Courier, monospace;
+}
+
+/* Text Glowing effect */
+.text-glow {
+  text-shadow: 0 0 10px rgba(0, 229, 255, 0.6);
+}
+
+.text-glow-success {
+  text-shadow: 0 0 10px rgba(108, 255, 108, 0.6);
+}
+
+.text-glow-danger {
+  text-shadow: 0 0 10px rgba(255, 92, 92, 0.6);
+}
+
+.text-glow-warning {
+  text-shadow: 0 0 10px rgba(255, 176, 0, 0.6);
+}

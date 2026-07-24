@@ -1,0 +1,14 @@
+{
+  "name": "steamtrackify-root",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "install-all": "npm install --prefix backend && npm install --prefix client",
+    "dev-backend": "npm run dev --prefix backend",
+    "dev-client": "npm run dev --prefix client",
+    "dev": "npx concurrently -k -p \"[{name}]\" -n \"Backend,Client\" -c \"cyan,magenta\" \"npm run dev-backend\" \"npm run dev-client\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
