@@ -16,27 +16,27 @@ export default function ShareCard({ data, topGamesCount, theme }: ShareCardProps
   const [sharing, setSharing] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
 
-  const [glare, setGlare] = useState({ x: 50, y: 50, opacity: 0 });
+  const isLight = theme === 'light';
+
+  const glareRef = useRef<HTMLDivElement>(null);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!cardRef.current || downloading || sharing) return;
+    if (!cardRef.current || !glareRef.current || downloading || sharing) return;
     const rect = cardRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
 
-    setGlare({
-      x: (x / rect.width) * 100,
-      y: (y / rect.height) * 100,
-      opacity: isLight ? 0.08 : 0.15
-    });
+    glareRef.current.style.background = `radial-gradient(circle at ${x}% ${y}%, rgba(255, 255, 255, ${isLight ? 0.08 : 0.15}) 0%, transparent 65%)`;
+    glareRef.current.style.opacity = '1';
   };
 
   const handleMouseLeave = () => {
-    setGlare({ x: 50, y: 50, opacity: 0 });
+    if (glareRef.current) {
+      glareRef.current.style.opacity = '0';
+    }
   };
 
   const { profile, aiStats, games } = data;
-  const isLight = theme === 'light';
 
   // Standard File Download handler
   const handleDownload = async () => {
@@ -178,12 +178,13 @@ export default function ShareCard({ data, topGamesCount, theme }: ShareCardProps
           height: 'auto',
         }}
       >
-        {/* Interactive Glare overlay */}
+        {/* Interactive Glare overlay (ref-based for zero re-render lag during scrolling) */}
         {!(downloading || sharing) && (
           <div 
-            className="absolute inset-0 pointer-events-none z-50 transition-opacity duration-300"
+            ref={glareRef}
+            className="absolute inset-0 pointer-events-none z-50 transition-opacity duration-300 opacity-0"
             style={{
-              background: `radial-gradient(circle at ${glare.x}% ${glare.y}%, rgba(255, 255, 255, ${glare.opacity}) 0%, transparent 65%)`,
+              background: `radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0) 0%, transparent 65%)`,
             }}
           />
         )}
