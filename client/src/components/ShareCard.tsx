@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import html2canvas from 'html2canvas';
-import { Download, Smartphone, Square as SquareIcon } from 'lucide-react';
+import { Download, Share2, Smartphone, Square as SquareIcon } from 'lucide-react';
 import { ProfileAnalysis } from '@shared/types';
 
 interface ShareCardProps {
@@ -12,11 +12,13 @@ interface ShareCardProps {
 export default function ShareCard({ data, topGamesCount, theme }: ShareCardProps) {
   const [format, setFormat] = useState<'square' | 'story'>('square');
   const [downloading, setDownloading] = useState(false);
+  const [sharing, setSharing] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
 
   const { profile, aiStats, games } = data;
   const isLight = theme === 'light';
 
+  // Standard File Download handler
   const handleDownload = async () => {
     if (!cardRef.current) return;
     try {
@@ -37,6 +39,73 @@ export default function ShareCard({ data, topGamesCount, theme }: ShareCardProps
       console.error('Error generating receipt image:', err);
     } finally {
       setDownloading(false);
+    }
+  };
+
+  // Social sharing handler with Native share sheets & Clipboard integration
+  const handleShare = async () => {
+    if (!cardRef.current) return;
+    try {
+      setSharing(true);
+      const canvas = await html2canvas(cardRef.current, {
+        useCORS: true,
+        allowTaint: true,
+        scale: 2.5,
+        backgroundColor: isLight ? '#FAF9F6' : '#0F131C',
+      });
+
+      canvas.toBlob(async (blob) => {
+        if (!blob) {
+          throw new Error('Failed to generate image file');
+        }
+
+        const file = new File([blob], `GameFlex_${profile.personaname}.png`, { type: 'image/png' });
+
+        // 1. Mobile & Web Share API support (Safari, Chrome on iOS/Android)
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          try {
+            await navigator.share({
+              files: [file],
+              title: 'GameFlex Gaming Receipt',
+              text: `Check out my gaming receipt generated on GameFlex!`,
+            });
+            return;
+          } catch (shareErr: any) {
+            // Ignore abort error (user dismissed the sheet)
+            if (shareErr.name !== 'AbortError') {
+              console.error('Share aborted or failed:', shareErr);
+            } else {
+              return;
+            }
+          }
+        }
+
+        // 2. Clipboard & Download Fallback (Desktop / browsers without share sheet)
+        try {
+          await navigator.clipboard.write([
+            new ClipboardItem({
+              [blob.type]: blob
+            })
+          ]);
+          alert('📥 Receipt copied to clipboard and downloaded! Paste (Ctrl+V) it to share instantly, or upload the PNG to your Instagram Story or post.');
+        } catch (clipErr) {
+          alert('📥 Receipt image downloaded! Upload the PNG directly to your Instagram Story or post.');
+        }
+
+        // Trigger file download backup
+        const imgData = canvas.toDataURL('image/png');
+        const link = document.createElement('a');
+        link.download = `GameFlexReceipt_${profile.personaname}.png`;
+        link.href = imgData;
+        link.click();
+
+      }, 'image/png');
+
+    } catch (err) {
+      console.error('Error in sharing flow:', err);
+      alert('Failed to generate sharing card.');
+    } finally {
+      setSharing(false);
     }
   };
 
@@ -192,19 +261,36 @@ export default function ShareCard({ data, topGamesCount, theme }: ShareCardProps
         </div>
       </div>
 
-      {/* Download action button */}
-      <button
-        onClick={handleDownload}
-        disabled={downloading}
-        className={`flex items-center gap-2 rounded-xl px-6 py-3 font-outfit text-sm font-semibold text-black transition-all disabled:opacity-50 ${
-          isLight 
-            ? 'bg-slate-800 text-white hover:bg-slate-900 shadow-md' 
-            : 'bg-gradient-to-r from-primary to-indigo-600 hover:from-white hover:to-white shadow-glow-primary hover:shadow-glow-primary-heavy'
-        }`}
-      >
-        <Download className="h-4 w-4" />
-        {downloading ? 'Printing Receipt...' : 'Download Gaming Receipt'}
-      </button>
+      {/* Action Buttons Group */}
+      <div className="flex flex-col sm:flex-row gap-3 w-full justify-center max-w-sm px-4">
+        {/* Download Button */}
+        <button
+          onClick={handleDownload}
+          disabled={downloading || sharing}
+          className={`flex items-center justify-center gap-2 rounded-xl px-5 py-3 font-outfit text-sm font-semibold transition-all disabled:opacity-50 flex-1 ${
+            isLight 
+              ? 'bg-slate-200 text-slate-800 hover:bg-slate-300 shadow-sm border border-slate-300/50' 
+              : 'bg-white/5 hover:bg-white/10 border border-white/10 text-white'
+          }`}
+        >
+          <Download className="h-4 w-4" />
+          Download PNG
+        </button>
+
+        {/* Share Button */}
+        <button
+          onClick={handleShare}
+          disabled={downloading || sharing}
+          className={`flex items-center justify-center gap-2 rounded-xl px-5 py-3 font-outfit text-sm font-semibold text-black transition-all disabled:opacity-50 flex-1 shadow-glow-primary hover:shadow-glow-primary-heavy ${
+            isLight
+              ? 'bg-slate-800 text-white hover:bg-slate-900 font-bold'
+              : 'bg-gradient-to-r from-primary to-indigo-600 hover:from-white hover:to-white font-bold'
+          }`}
+        >
+          <Share2 className="h-4 w-4" />
+          {sharing ? 'Sharing...' : 'Share to Socials'}
+        </button>
+      </div>
     </div>
   );
 }
