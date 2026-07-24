@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react';
 import html2canvas from 'html2canvas';
 import { Download, Share2, Smartphone, Square as SquareIcon } from 'lucide-react';
 import { ProfileAnalysis } from '@shared/types';
+import ReceiptIllustration from './ReceiptIllustration';
 
 interface ShareCardProps {
   data: ProfileAnalysis;
@@ -223,12 +224,13 @@ export default function ShareCard({ data, topGamesCount, theme }: ShareCardProps
           </div>
 
           {/* AI Roast / Motto */}
-          <div className="text-center my-1">
-            <span className={`text-[10px] font-bold uppercase tracking-widest block mb-1 ${isLight ? 'text-slate-400' : 'text-slate-500'}`}>AI EVALUATION</span>
+          <div className="text-center my-1 flex flex-col items-center gap-1">
+            <ReceiptIllustration title={aiStats.title} theme={theme} />
+            <span className={`text-[10px] font-bold uppercase tracking-widest block mt-2 mb-1 ${isLight ? 'text-slate-400' : 'text-slate-500'}`}>AI EVALUATION</span>
             <span className={`font-bold text-[11px] uppercase block leading-tight ${isLight ? 'text-slate-900' : 'text-white'}`}>{aiStats.title}</span>
             <span className={`text-[9px] italic block mt-1 ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>"{aiStats.motto}"</span>
             
-            <div className={`mt-2 rounded-lg p-2.5 border ${isLight ? 'bg-slate-200/40 border-slate-300/60' : 'bg-white/[0.02] border-white/5'}`}>
+            <div className={`mt-2.5 rounded-lg p-2.5 border w-full ${isLight ? 'bg-slate-200/40 border-slate-300/60' : 'bg-white/[0.02] border-white/5'}`}>
               <p className={`text-[9px] leading-relaxed text-left ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
                 👉 {aiStats.roast}
               </p>
